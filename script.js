@@ -2,18 +2,29 @@ const tableArray = document.querySelectorAll(".table-array");
 const prayerArray = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
 fetch('http://ip-api.com/json/')
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
   .then(data => {
     let city = data.city;
     let country = data.countryCode;
     let lat = data.lat; 
     let lon = data.lon;
-    
+
+    console.log(`Latitude: ${lat}, Longitude: ${lon}`); // Debugging log
     document.getElementById("city").innerHTML = `${city}, ${country}`;
 
     // جلب أوقات الصلاة
     fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
       .then(dataTime => {
         if (dataTime.data && dataTime.data.timings) {
           let timings = dataTime.data.timings;
