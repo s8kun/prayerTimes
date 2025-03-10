@@ -18,18 +18,18 @@ fetch('http://ip-api.com/json/')
         if (dataTime.data && dataTime.data.timings) {
           let timings = dataTime.data.timings;
 
-          // تحديث الجدول بأوقات الصلاة
+          // تحديث الجدول بأوقات الصلاة 
           prayerArray.forEach((prayer, index) => {
             if (tableArray[index]) {
-              let prayerTime = timings[prayer]; // الوقت بصيغة HH:MM
-              let [hour, minute] = prayerTime.split(":").map(num => parseInt(num)); // تحويل الوقت إلى أرقام
+              let prayerTime = timings[prayer]; 
+              let [hour, minute] = prayerTime.split(":").map(num => parseInt(num)); 
 
               let period = "AM";
               if (hour >= 12) {
                 period = "PM";
-                if (hour > 12) hour -= 12; // تحويل 24 ساعة إلى 12 ساعة
+                if (hour > 12) hour -= 12; 
               } else if (hour === 0) {
-                hour = 12; // تحويل منتصف الليل إلى 12 AM
+                hour = 12; 
               }
 
               tableArray[index].innerText = `${hour}:${minute.toString().padStart(2, "0")} ${period}`;  
