@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/output.css">
+    <link rel="stylesheet" href="/src/costum.css">
+    <title>Prayer Times</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .hidden-element {
+            opacity: 0;
+            transform: translateX(-80px); /* تحريك العنصر للأسفل */
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="m-0 p-0 bg-gray-300 w-full h-full">
+    <div class="w-full h-full">
+        <div class="bg-gray-400 pt-12 pb-4 text-center rounded-br-2xl rounded-bl-2xl text-[21px] navbar" id="navbar">
+            <p class="tajawal-medium pb-2">
+                أشهد أن لا إله إلا الله وحده لا شريك له
+                وأن محمدا عبده ورسوله
+            </p>
+            <h1 class="tajawal-bold text-center pt-2 pb-4 text-lg text-gray-300" id="city"></h1>
+            <button id="Prayer-time" type="button"
+                class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 text-center">
+                مواعيد الصلاه
+            </button>
+        </div>
+        <div class="px-15 py-20 hidden-element" id="prayer-times" style="display: none;">
+            <table class="flex flex-col text-center" id="table">
+                <tr class="flex justify-between px-5 border-b-black border mb-3.5">
+                    <td class="py-5 text-[16px]">Fajr</td>
+                    <td class="py-5 text-[16px] table-array">00:00 <span>AM</span></td>
+                </tr>
+                <tr class="flex justify-between px-5 border-b-black border mb-3.5">
+                    <td class="py-5 text-[16px]">Dhuhr</td>
+                    <td class="py-5 text-[16px] table-array">10:00 <span>AM</span></td>
+                </tr>
+                <tr class="flex justify-between px-5 border-b-black border mb-3.5">
+                    <td class="py-5 text-[16px]">Asr</td>
+                    <td class="py-5 text-[16px] table-array">00:00 <span>AM</span></td>
+                </tr>
+                <tr class="flex justify-between px-5 border-b-black border mb-3.5">
+                    <td class="py-5 text-[16px]">Maghrib</td>
+                    <td class="py-5 text-[16px] table-array">00:00 <span>AM</span></td>
+                </tr>
+                <tr class="flex justify-between px-5 border-b-black border mb-3.5">
+                    <td class="py-5 text-[16px]">Isha</td>
+                    <td class="py-5 text-[16px] table-array">00:00 <span>AM</span></td>
+                </tr>
+            </table>
+        </div>
+        <footer class="bg-gray-400 p-6">
+            <p class="text-center tajawal-bold text-[14px] ">جميع الحقوق محفوظة عبدالله الفرجاني &copy; 2025</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Toggle prayer times on button click
+            $('#Prayer-time').click(function () {
+                $('#prayer-times').toggle(); // إظهار أو إخفاء مواعيد الصلاة
+                if ($('#prayer-times').is(':visible')) {
+                    $('#prayer-times').addClass('visible'); // إضافة الفئة visible عند الإظهار
+                } else {
+                    $('#prayer-times').removeClass('visible'); // إزالة الفئة عند الإخفاء
+                }
+                $('#navbar').toggleClass('navbar');
+                
+
+            });
+
+            // Scroll event for animation
+            $(window).on("scroll", function () {
+                $(".hidden-element").each(function () {
+                    let elementTop = $(this).offset().top;
+                    let windowBottom = $(window).scrollTop() + $(window).height();
+
+                    if (elementTop < windowBottom - 50) { // 50 بكسل تحفيز الظهور قبل الوصول الكامل
+                        $(this).addClass("visible");
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+
+</html>
