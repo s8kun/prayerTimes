@@ -35,3 +35,13 @@ body {
   height: 100vh;
   border-radius: 0px;
 }
+.hidden-element {
+  opacity: 0;
+  transform: translateX(-80px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -8,18 +8,6 @@
     <link rel="stylesheet" href="src/costum.css">
     <title>Prayer Times</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .hidden-element {
-            opacity: 0;
-            transform: translateX(-80px); /* تحريك العنصر للأسفل */
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
 </head>
 
 <body class="m-0 p-0 bg-gray-300 w-full h-full">
@@ -63,36 +51,6 @@
             <p class="text-center tajawal-bold text-[14px] ">جميع الحقوق محفوظة عبدالله الفرجاني &copy; 2025</p>
         </footer>
     </div>
-    <script src="script.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Toggle prayer times on button click
-            $('#Prayer-time').click(function () {
-                $('#prayer-times').toggle(); // إظهار أو إخفاء مواعيد الصلاة
-                if ($('#prayer-times').is(':visible')) {
-                    $('#prayer-times').addClass('visible'); // إضافة الفئة visible عند الإظهار
-                } else {
-                    $('#prayer-times').removeClass('visible'); // إزالة الفئة عند الإخفاء
-                }
-                $('#navbar').toggleClass('navbar');
-                
-
-            });
-
-            // Scroll event for animation
-            $(window).on("scroll", function () {
-                $(".hidden-element").each(function () {
-                    let elementTop = $(this).offset().top;
-                    let windowBottom = $(window).scrollTop() + $(window).height();
-
-                    if (elementTop < windowBottom - 50) { // 50 بكسل تحفيز الظهور قبل الوصول الكامل
-                        $(this).addClass("visible");
-                    }
-                });
-            });
-        });
-
-    </script>
+    <script src="./script.js"></script>
 </body>
-
 </html>

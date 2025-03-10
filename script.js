@@ -53,3 +53,30 @@ fetch('http://ip-api.com/json/')
       .catch(error => console.error("Error fetching prayer times:", error));
   })
   .catch(error => console.error("Error fetching location data:", error));
+
+  $(document).ready(function () {
+    // Toggle prayer times on button click
+    $('#Prayer-time').click(function () {
+        $('#prayer-times').toggle(); // إظهار أو إخفاء مواعيد الصلاة
+        if ($('#prayer-times').is(':visible')) {
+            $('#prayer-times').addClass('visible'); // إضافة الفئة visible عند الإظهار
+        } else {
+            $('#prayer-times').removeClass('visible'); // إزالة الفئة عند الإخفاء
+        }
+        $('#navbar').toggleClass('navbar');
+        
+
+    });
+
+    // Scroll event for animation
+    $(window).on("scroll", function () {
+        $(".hidden-element").each(function () {
+            let elementTop = $(this).offset().top;
+            let windowBottom = $(window).scrollTop() + $(window).height();
+
+            if (elementTop < windowBottom - 50) { // 50 بكسل تحفيز الظهور قبل الوصول الكامل
+                $(this).addClass("visible");
+            }
+        });
+    });
+});
