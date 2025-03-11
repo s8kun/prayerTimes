@@ -45,3 +45,12 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+@media screen and (max-width: 768px) {
+  #prayer-times{
+padding: 40px 60px;
+  }
+  #navbar p {
+    font-size: 18px;
+  }
+  
+}

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,30 +13,23 @@
             transform: translateX(-80px);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
-
         .visible {
             opacity: 1;
             transform: translateY(0);
         }
-
         .navbar {
             transition: background-color 0.3s ease;
-            background-color: rgba(0, 0, 0, 0.7); /* Example background color */
+            background-color: rgba(0, 0, 0, 0.7);
         }
     </style>
 </head>
-
 <body class="m-0 p-0 bg-gray-300 w-full h-full">
     <div class="w-full h-full">
         <div class="bg-gray-400 pt-12 pb-4 text-center rounded-br-2xl rounded-bl-2xl text-[21px] navbar" id="navbar">
-            <p class="tajawal-medium pb-2">
-                أشهد أن لا إله إلا الله وحده لا شريك له
-                وأن محمدا عبده ورسوله
-            </p>
+            <p class="tajawal-medium pb-2"> أشهد أن لا إله إلا الله وحده لا شريك له وأن محمدا عبده ورسوله </p>
             <h1 class="tajawal-bold text-center pt-2 pb-4 text-lg text-gray-300" id="city"></h1>
-            <button id="Prayer-time" type="button"
-                class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 text-center">
-                مواعيد الصلاه
+            <button id="Prayer-time" type="button" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 text-center">
+                مواعيد الصلاة
             </button>
         </div>
         <div class="px-15 py-20 hidden-element" id="prayer-times" style="display: none;">
@@ -60,90 +52,68 @@
                 </tr>
                 <tr class="flex justify-between px-5 border-b-black border mb-3.5">
                     <td class="py-5 text-[16px]">Isha</td>
-                    <td class ="py-5 text-[16px] table-array">00:00 <span>AM</span></td>
+                    <td class="py-5 text-[16px] table-array">00:00 <span>AM</span></td>
                 </tr>
             </table>
         </div>
         <footer class="bg-gray-400 p-6">
-            <p class="text-center tajawal-bold text-[14px] ">جميع الحقوق محفوظة عبدالله الفرجاني &copy; 2025</p>
+            <p class="text-center tajawal-bold text-[14px]">جميع الحقوق محفوظة عبدالله الفرجاني &copy; 2025</p>
         </footer>
     </div>
     <script>
         const tableArray = document.querySelectorAll(".table-array");  
         const prayerArray = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
-        fetch('http://ip-api.com/json/')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+        fetch('https://us1.api-bdc.net/data/client-info')
+            .then(response => response.json())
             .then(data => {
-                let city = data.city;
-                let country = data.countryCode;
-                let lat = data.lat; 
-                let lon = data.lon;
-
-                console.log(`Latitude: ${lat}, Longitude: ${lon}`); // Debugging log
-                document.getElementById("city").innerHTML = `${city}, ${country}`;
-
-                // جلب أوقات الصلاة
-                fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(dataTime => {
-                        if (dataTime.data && dataTime.data.timings) {
-                            let timings = dataTime.data.timings;
-
-                            // تحديث الجدول بأوقات الصلاة 
-                            prayerArray.forEach((prayer, index) => {
-                                if (tableArray[index]) {
-                                    let prayerTime = timings[prayer]; 
-                                    let [hour, minute] = prayerTime.split(":").map(num => parseInt(num)); 
-
-                                    let period = "AM";
-                                    if (hour >= 12) {
-                                        period = "PM";
-                                        if (hour > 12) hour -= 12; 
-                                    } else if (hour === 0) {
-                                        hour = 12; 
-                                    }
-
-                                    tableArray[index].innerText = `${hour}:${minute.toString().padStart(2, "0")} ${period}`;  
-                                }
-                            });
-                        } else {
-                            console.error("Invalid response from Aladhan API", dataTime);
-                        }
-                    })
-                    .catch(error => console.error("Error fetching prayer times:", error));
+                let ipString = data.ipString;
+                return fetch(`https://api-bdc.net/data/ip-geolocation?ip=${ipString}&localityLanguage=en&key=bdc_c899adc28a2940eaa37c1c28818923f3`);
             })
-            .catch(error => console.error("Error fetching location data:", error));
+            .then(response => response.json())
+            .then(locationData => {
+                let lat = locationData.location.latitude;
+                let lon = locationData.location.longitude;
+                let city = locationData.location.city;
+                let country = locationData.country.name;
+                document.getElementById("city").innerHTML = `${city}, ${country}`;
+                return fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`);
+            })
+            .then(response => response.json())
+            .then(prayerData => {
+                if (prayerData.data && prayerData.data.timings) {
+                    let timings = prayerData.data.timings;
+                    prayerArray.forEach((prayer, index) => {
+                        if (tableArray[index]) {
+                            let prayerTime = timings[prayer];
+                            let [hour, minute] = prayerTime.split(":").map(num => parseInt(num));
+                            let period = "AM";
+                            if (hour >= 12) {
+                                period = "PM";
+                                if (hour > 12) hour -= 12;
+                            } else if (hour === 0) {
+                                hour = 12;
+                            }
+                            tableArray[index].innerText = `${hour}:${minute.toString().padStart(2, "0")} ${period}`;
+                        }
+                    });
+                } else {
+                    console.error("Invalid response from Aladhan API", prayerData);
+                }
+            })
+            .catch(error => console.error("Error fetching data:", error));
 
         $(document).ready(function () {
-            // Toggle prayer times on button click
             $('#Prayer-time').click(function () {
-                $('#prayer-times').toggle(); // إظهار أو إخفاء مواعيد الصلاة
-                if ($('#prayer-times').is(':visible')) {
-                    $('#prayer-times').addClass('visible'); // إضافة الفئة visible عند الإظهار
-                } else {
-                    $('#prayer-times').removeClass('visible'); // إزالة الفئة عند الإخفاء
-                }
+                $('#prayer-times').toggle();
+                $('#prayer-times').toggleClass('visible', $('#prayer-times').is(':visible'));
                 $('#navbar').toggleClass('navbar');
             });
-
-            // Scroll event for animation
             $(window).on("scroll", function () {
                 $(".hidden-element").each(function () {
                     let elementTop = $(this).offset().top;
                     let windowBottom = $(window).scrollTop() + $(window).height();
-
-                    if (elementTop < windowBottom - 50) { // 50 بكسل تحفيز الظهور قبل الوصول الكامل
+                    if (elementTop < windowBottom - 50) {
                         $(this).addClass("visible");
                     }
                 });
